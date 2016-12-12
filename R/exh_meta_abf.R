@@ -55,7 +55,7 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     if(tolerance>sqrt(.Machine$double.eps)){
         warning(paste0("Your tolerance might be too high. The standard value for the internal functions is ",sqrt(.Machine$double.eps),"."))
     }
-    if(!is.na(study.names)){
+    if(length(study.names)>0){
         if(class(study.names)!="character"){
             stop("study.names needs to be a character vector.")
         }
