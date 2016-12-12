@@ -1,5 +1,5 @@
 exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.cor=NA,log=FALSE,log10=FALSE,study.names=NULL,na.rm=FALSE,tolerance=1e-1000){
-    #betas is a numeric vector of observed effect sizes of a single SNP in a set of studies. Each element of the vector is assumed to correspond to a study. 
+    #betas is a numeric vector of observed effect sizes of a single SNP in a set of studies. Each element of the vector is assumed to correspond to a study.
     #ses is a numeric vector of standard errors corresponding to those in betas. It should have the same length as betas.
     #prior.sigma is the prior on true effect sizes for each SNP in each study. It can be a flat value, set for each study (i.e. a vector whose length is equal to the number of studies in the meta-analysis) or set for each study and SNP (i.e. a matrix of same dimension as betas).
     #prior.cor is a square matrix whose row and column numbers are the same as the number of studies. Its elements are the pairwise correlations between true effect sizes of the studies. It can take values "indep" (independent effects), "fixed" (fixed effects), "correlated" (correlated effects, which requires the prior.rho parameter to be set), as well as individual matrices. If betas and ses are matrices, the same prior.cor will be applied to every row (representing every SNP).
@@ -10,7 +10,7 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     #study.names if set, the output will label the columns with the study names.
     #na.rm if there are NAs in the data, these are removed and the calculation is performed with the remaining data. This happens regardless of how this parameter is set. By default, the output will include a column of NAs for the study with the missing data. Changing this parameter to TRUE removes this column.
     #tolerance for the ABF calculation, this can be lowered (or raised, if necessary) if the answers are not what was expected. Should probably never be altered, but is there in case it is needed.
-    
+
     #If betas and ses are data frames, this checks if they can be turned into numeric vectors. Stops the calculation if this is not the case.
     if(!class(betas) %in% c("data.frame","numeric")){
         stop("betas should be a numeric vector.")
@@ -18,7 +18,7 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     if(!class(ses) %in% c("data.frame","numeric")){
         stop("ses should be a numeric vector.")
     }
-    
+
     if(class(betas)=="data.frame"){
         if(dim(betas)[1]>1){
             stop("betas should be a vector, not multiple rows from a matrix or a data frame.")
@@ -58,16 +58,16 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     if(class(study.names)!="character"){
         stop("study.names needs to be a character vector.")
     }
-    
+
     if(length(betas)!=length(ses)){
         stop("betas and ses should be the same length.")
     }
     nstudies<-length(betas)
-    
+
     if(length(study.names)!=nstudies){
         stop(paste0("study.names needs to be of length ",nstudies,"."))
     }
-    
+
     ##Check prior.sigma isn't erroneous.
     if(!length(prior.sigma) %in% c(1,nstudies)){
         stop("prior.sigma should either be a single value or a vector whose length is equal to the number of studies.")
@@ -78,7 +78,7 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     if(length(prior.sigma)==1){
         prior.sigma<-rep(prior.sigma,nstudies)
     }
-    
+
     ##Get the prior correlation matrix.
     if(prior.cor=="correlated"){
         if(is.na(prior.rho)){
@@ -115,14 +115,21 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
             stop("prior.cor is not a symmetric matrix.")
         }
         if(any(eigen(prior.cor)$values<0)){
-            stop("prior.cor is not positive definite.")
+            stop("prior.cor is not positive semidefinite.")
         }
-        if(any(diag(prior.cor)!=1)){
-            stop("the diagonal of prior.cor should be 1 uniformly.")
+        if(!all(diag(prior.cor) %in% c(0,1))){
+            stop("the diagonal of prior.cor should be 1 for all studies with true effects and 0 elsewhere.")
+        }
+        if(all(prior.cor[which(diag(prior.cor==0)),]!=0) || all(prior.cor[,which(diag(prior.cor==0))]!=0)){
+            if(length(which(diag(prior.cor==0)))==1){
+                stop(paste0("Row ",which(diag(prior.cor==0))," and column ",which(diag(prior.cor==0))," of prior.cor should all be 0, or else prior.cor[",which(diag(prior.cor==0)),",",which(diag(prior.cor==0)),"] should be 1."))
+            } else {
+                stop(paste0("Rows ",paste(which(diag(prior.cor==0)),collapse=",")," and columns ",paste(which(diag(prior.cor==0)),collapse=",")," of prior.cor should all be 0, or else prior.cor[c(",paste(which(diag(prior.cor==0)),collapse=","),"), c(",paste(which(diag(prior.cor==0)),collapse=","),")] should all be 1."))
+            }
         }
         prior.cor.mat<-prior.cor
     }
-    
+
     ##Get the cryptic correlation matrix
     if(all(is.na(cryptic.cor)) && length(cryptic.cor)==1){
         cryptic.cor.mat<-diag(nstudies)
@@ -143,9 +150,9 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     } else {
         cryptic.cor.mat<-cryptic.cor
     }
-    
-    
-    
+
+
+
     #Functions takes as input integer (or vector of integers) and integer b (default is b=2)
     #and outputs integer(s) in base b.
     integer.base.b <-function(x, b=2){
@@ -162,8 +169,8 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
         }
         if(N == 1) Base.b[1, ] else Base.b
     }
-    
-    
+
+
     #Calculate V and the null once.
     ind<-intersect(which(!is.na(betas)),which(!is.na(ses)))
     nind<-union(which(is.na(betas)),which(is.na(ses)))
@@ -171,12 +178,12 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     if(n<=1){
         return(NA)
     }
-    
+
     b<-betas[ind]
     se<-ses[ind]
     ccm<-cryptic.cor.mat[ind,ind]
     prior.V.gen<-prior.cor.mat[ind,ind]*matrix(prior.sigma[ind],nrow=n,ncol=n)*t(matrix(prior.sigma[ind],nrow=n,ncol=n))
-    
+
     V<-diag(se^2)
     for(i in 1:(nrow(V)-1)){
         for(j in (i+1):ncol(V)){
@@ -184,9 +191,9 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
             V[j,i]<-V[i,j]
         }
     }
-    
+
     null.calc<-as.numeric(determinant(V,logarithm=TRUE)$modulus)
-    
+
     nmodels<-2^n
     subset<-integer.base.b(0:(nmodels-1))
     ABF <- rep(0,nmodels)
@@ -198,7 +205,7 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
         lbf<-(-0.5*(as.numeric(determinant(A,logarithm=TRUE)$modulus)-null.calc))
         ABF[i]<-(lbf + 0.5 * quad.form)
     }
-    
+
     if(log10){
         ABF<-ABF/log(10)
     }
@@ -217,6 +224,6 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
             colnames(subset)<-study.names
         }
     }
-    
+
     return(as.data.frame(cbind(subset,ABF)))
 }

@@ -117,10 +117,17 @@ meta.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.
             stop("prior.cor is not a symmetric matrix.")
         }
         if(any(eigen(prior.cor)$values<0)){
-            stop("prior.cor is not positive definite.")
+            stop("prior.cor is not positive semidefinite.")
         }
-        if(any(diag(prior.cor)!=1)){
-            stop("the diagonal of prior.cor should be 1 uniformly.")
+        if(!all(diag(prior.cor) %in% c(0,1))){
+            stop("the diagonal of prior.cor should be 1 for all studies with true effects and 0 elsewhere.")
+        }
+        if(all(prior.cor[which(diag(prior.cor==0)),]!=0) || all(prior.cor[,which(diag(prior.cor==0))]!=0)){
+            if(length(which(diag(prior.cor==0)))==1){
+                stop(paste0("Row ",which(diag(prior.cor==0))," and column ",which(diag(prior.cor==0))," of prior.cor should all be 0, or else prior.cor[",which(diag(prior.cor==0)),",",which(diag(prior.cor==0)),"] should be 1."))
+            } else {
+                stop(paste0("Rows ",paste(which(diag(prior.cor==0)),collapse=",")," and columns ",paste(which(diag(prior.cor==0)),collapse=",")," of prior.cor should all be 0, or else prior.cor[c(",paste(which(diag(prior.cor==0)),collapse=","),"), c(",paste(which(diag(prior.cor==0)),collapse=","),")] should all be 1."))
+            }
         }
         prior.cor.mat<-prior.cor
     }

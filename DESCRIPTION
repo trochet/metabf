@@ -4,7 +4,7 @@ Title: Meta-analysis of Genome-wide Association Studies Using Approximate Bayes 
 Version: 1.0.0
 Author: Holly Trochet
 Maintainer: Holly Trochet <trochet@well.ox.ac.uk>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Description: Provides functions for calculating an approimate Bayes factor for meta-analysis of genome-wide association studies.
+License: GPL-3
 LazyData: TRUE
 Imports: MASS
