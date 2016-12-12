@@ -55,19 +55,19 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     if(tolerance>sqrt(.Machine$double.eps)){
         warning(paste0("Your tolerance might be too high. The standard value for the internal functions is ",sqrt(.Machine$double.eps),"."))
     }
-    if(length(study.names)>0){
-        if(class(study.names)!="character"){
-            stop("study.names needs to be a character vector.")
-        }
-    }
 
     if(length(betas)!=length(ses)){
         stop("betas and ses should be the same length.")
     }
     nstudies<-length(betas)
 
-    if(length(study.names)!=nstudies){
-        stop(paste0("study.names needs to be of length ",nstudies,"."))
+    if(length(study.names)>0){
+        if(class(study.names)!="character"){
+            stop("study.names needs to be a character vector.")
+        }
+        if(length(study.names)!=nstudies){
+            stop(paste0("study.names needs to be of length ",nstudies,"."))
+        }
     }
 
     ##Check prior.sigma isn't erroneous.
