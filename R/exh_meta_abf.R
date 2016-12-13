@@ -82,28 +82,30 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
     }
 
     ##Get the prior correlation matrix.
-    if(prior.cor=="correlated"){
-        if(is.na(prior.rho)){
-            stop("prior.rho must be set or prior.cor must be changed to something other than \"correlated.\"")
-        }
-        if(!is.numeric(prior.rho)){
-            stop("prior.rho must be numeric.")
-        }
-        if(!length(prior.rho) %in% c(1,choose(nstudies,2))){
-            stop("prior.rho should be either a flat value or the full upper triangle of the desired correlation matrix.")
-        }
-        if(length(prior.cor)==1){
-            prior.cor.mat<-matrix(prior.rho,nrow=nstudies,ncol=nstudies)
-            diag(prior.cor.mat)<-1
-        } else {
+    if(class(prior.cor)=="character"){
+        if(prior.cor=="correlated"){
+            if(is.na(prior.rho)){
+                stop("prior.rho must be set or prior.cor must be changed to something other than \"correlated.\"")
+            }
+            if(!is.numeric(prior.rho)){
+                stop("prior.rho must be numeric.")
+            }
+            if(!length(prior.rho) %in% c(1,choose(nstudies,2))){
+                stop("prior.rho should be either a flat value or the full upper triangle of the desired correlation matrix.")
+            }
+            if(length(prior.cor)==1){
+                prior.cor.mat<-matrix(prior.rho,nrow=nstudies,ncol=nstudies)
+                diag(prior.cor.mat)<-1
+            } else {
+                prior.cor.mat<-diag(nstudies)
+                prior.cor.mat[upper.tri(prior.cor.mat,diag=FALSE)]<-prior.cor
+                prior.cor.mat[lower.tri(prior.cor.mat)]<-t(prior.cor.mat)[lower.tri(prior.cor.mat)]
+            }
+        } else if(prior.cor=="indep"){
             prior.cor.mat<-diag(nstudies)
-            prior.cor.mat[upper.tri(prior.cor.mat,diag=FALSE)]<-prior.cor
-            prior.cor.mat[lower.tri(prior.cor.mat)]<-t(prior.cor.mat)[lower.tri(prior.cor.mat)]
+        } else if(prior.cor=="fixed"){
+            prior.cor.mat<-matrix(1,nrow=nstudies,ncol=nstudies)
         }
-    } else if(prior.cor=="indep"){
-        prior.cor.mat<-diag(nstudies)
-    } else if(prior.cor=="fixed"){
-        prior.cor.mat<-matrix(1,nrow=nstudies,ncol=nstudies)
     } else if(class(prior.cor)!="matrix"){
         stop("prior.cor should be a matrix, or one of the following values: \"indep\", \"fixed\", or \"correlated\"")
     } else {
@@ -131,7 +133,7 @@ exh.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.c
         }
         prior.cor.mat<-prior.cor
     }
-
+    
     ##Get the cryptic correlation matrix
     if(all(is.na(cryptic.cor)) && length(cryptic.cor)==1){
         cryptic.cor.mat<-diag(nstudies)
