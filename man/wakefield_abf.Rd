@@ -19,33 +19,25 @@ wakefield.abf(beta,se,prior.sigma,log=FALSE,log10=FALSE)
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
+\value{If \code{beta} and \code{se} are vectors, then the output will be a numeric vector of Wakefield's approximate Bayes factors corresponding to the elements of \code{beta} and \code{se}. Otherwise, this function outputs a single numeric value.}
 \references{
 Wakefield, Jon. Bayes Factors for Genome-Wide Association Studies: Comparison with P-values. \emph{Genetic Epidemiology.} 33:79--76. 2009.}
 \author{Trochet, Holly}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{\code{\link{meta.abf}},\code{\link{exh.abf}}}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+##Test run on the Cotsapas data
+#Get all the data for MS
+MS <- cotsapas[,grep("^MS", names(cotsapas))]
+MS[1:10,]
 
-## The function is currently defined as
-function (x)
-{
-  }
+wakefield.abf(MS$MS.beta, MS$MS.SE, prior.sigma=0.2)
 }
+
+#For a single value
+i<-1
+wakefield.abf(cotsapas$SLE.beta[i],cotsapas$SLE.SE[i],prior.sigma=0.2)
+
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ univariate }
