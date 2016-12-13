@@ -31,26 +31,29 @@ tolerance=1e-1000)
 Each line is a binary vector where \code{1} corresponds to the studies with true effects in the model and \code{0} corresponds to the studies without. For example, the string that is uniformly \code{0} is the null model, and the string that is uniformly \code{1} is the model where every study shows a true effect.
 
 The final column, labelled \emph{ABF} indicates the approximate Bayes factor calculated for each of these models against the null.}
-\references{
+%\references{
 %% ~put references to the literature/web site here ~
-}
+%}
 \author{Trochet, Holly and Pirinen, Matti}
-\note{
+%\note{
 %%  ~~further notes~~
-}
+%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{\code{\link{meta.abf}},\code{\link{wakefield.abf}}}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+\section{Warning}{
+Searching all possible subset models means that the number of possible models doubles with every new study added. On the author's computer, this code fails when attempted with 30 studies (1,073,741,824 possible models) and takes about a day to complete the calculation for 28 phenotypes. Use caution (and patience) when attempting to use this to meta-analyze > 20 studies.
+}
 
-## The function is currently defined as
-function (x)
-{
-  }
+\seealso{\code{\link{meta.abf}}, \code{\link{wakefield.abf}}}
+\examples{
+#Collect the summary data from the cotsapas data frame.
+betas <- cotsapas[,grep("\\\\.beta", names(cotsapas))]
+ses <- cotsapas[,grep("\\\\.SE", names(cotsapas))]
+disease_names <- setdiff(unlist(strsplit(names(betas), "\\\\.")), "beta")
+
+i <- 1
+exh.abf(betas[i,], ses[i,], prior.sigma = 0.2, prior.cor = "correlated", prior.rho = 0.5, log10 = TRUE, study.names = disease_names)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

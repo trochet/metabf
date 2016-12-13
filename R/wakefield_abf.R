@@ -25,6 +25,9 @@ wakefield.abf<-function(beta,se,prior.sigma,log=FALSE,log10=FALSE){
     if(any(se<0,na.rm=TRUE)){
         stop("cannot accept negative values of se.")
     }
+    if(any(prior.sigma<=0)){
+        stop("all values of prior.sigma must be > 0.")
+    }
     if(any(se==0,na.rm=TRUE)){
         stop("one of the values of se is 0. This yields an approximate Bayes factor of 0.")
     }

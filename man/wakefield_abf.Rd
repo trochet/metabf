@@ -2,9 +2,7 @@
 \alias{wakefield.abf}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Wakefield's Approximate Bayes Factor}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\description{For a set of summary data from a genome-wide association study, provides an approximate Bayes factor for evidence of association of the trait with the SNP vs non-association.}
 \usage{
 wakefield.abf(beta, se, prior.sigma, log = FALSE, log10 = FALSE)
 }

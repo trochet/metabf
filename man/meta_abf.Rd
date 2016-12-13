@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Meta-Analysis with an Approximate Bayes Factor}
 
-\description{This function}
+\description{This function performs a meta-analysis on summary statistics from multiple genome-wide association studies. It takes as its inputs the effect size estimates (\code{betas}) and associated standard errors (\code{ses}), and for some prior on true effect size and on the relationship between the effect size across studies, returns a Bayes factor that shows the evidence in favour of the alternative model against the null model of no true effect.}
 \usage{
 meta.abf(betas, ses, prior.sigma, prior.cor = "indep",
 prior.rho = NA, cryptic.cor = NA, log = FALSE,
@@ -25,28 +25,32 @@ log10 = FALSE, tolerance = 1e-1000)
   \item{log10}{When \code{TRUE}, the calculation will return the log10 of the Bayes factors. Cannot be \code{TRUE} if \code{log = TRUE}.}
   \item{tolerance}{This is the relative tolerance to detect zero singular values.  Used in an internal function during the calculation of the approximate Bayes factor.  This should probably never be altered, but is there as a last resort if the calculation is not returning the values that are expected.}
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{Returns the approximate Bayes factor for the data under the given priors against the null.}
-\references{
+
+\value{Returns the approximate Bayes factor for the data under the given priors against the null. For a single SNP, this is a single value. For a matrix with rows of SNPs, this will return a numeric vector.}
+
+\note{Missing data should be marked \code{NA}. Where these are included, the calculation will be performed with the subset of the data for which there is information.}
+%\references{
 %% ~put references to the literature/web site here ~
-}
+%}
 \author{Trochet, Holly and Pirinen, Matti}
-\note{}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{\code{\link{exh.abf}},\code{\link{wakefield.abf}}}
+\seealso{\code{\link{exh.abf}}, \code{\link{wakefield.abf}}}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+#Obtain the matrices of betas and standard errors
+betas <- cotsapas[,grep("\\\\.beta", names(cotsapas))]
+ses <- cotsapas[,grep("\\\\.SE", names(cotsapas))]
 
-## The function is currently defined as
-function (x)
-{
-  }
+betas[1:10,]
+ses[1:10,]
+
+#Perform an independent effects meta-analysis
+meta.abf(betas, ses, prior.sigma = 0.2, prior.cor = "indep", log10 = TRUE)
+
+#Single SNP analysis
+i <- 1
+meta.abf(betas[i,], ses[i,], prior.sigma = 0.2, prior.cor = "correlated", prior.rho = 0.5, log10 = TRUE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

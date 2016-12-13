@@ -2,9 +2,7 @@
 \alias{cotsapas}
 \docType{data}
 \title{Summary Statistics from \dQuote{Pervasive Sharing of Genetic Effects in Autoimmune Disease}}
-\description{
-%%  ~~ A concise (1-5 lines) description of the dataset. ~~
-}
+\description{Summary statistics from seven genome-wide association studies, which were used in \dQuote{Pervasive Sharing of Genetic Effects in Autoimmune Disease} by Cotsapas \emph{et. al.} (see reference below). This dataset is meant to be used in demonstrations of the \code{metabf} package.}
 \usage{cotsapas}
 \format{
   A data frame with the summary statistics for seven autoimmune diseases across 107 single nucleotide polymorphisms. The columns are described below.
