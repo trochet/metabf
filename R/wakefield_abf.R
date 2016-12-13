@@ -31,7 +31,7 @@ wakefield.abf<-function(beta,se,prior.sigma,log=FALSE,log10=FALSE){
     if(length(beta)!=length(se)){
         stop("beta and se do not have the same length.")
     }
-    if(length(prior.sigma) %in% c(1,length(beta))){
+    if(!length(prior.sigma) %in% c(1,length(beta))){
         stop("prior.sigma must be either a single value or a numeric vector of equal length to beta and se.")
     }
     if(log && log10){

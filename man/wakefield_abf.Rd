@@ -6,7 +6,7 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-wakefield.abf(beta,se,prior.sigma,log=FALSE,log10=FALSE)
+wakefield.abf(beta, se, prior.sigma, log = FALSE, log10 = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,12 +31,11 @@ Wakefield, Jon. Bayes Factors for Genome-Wide Association Studies: Comparison wi
 MS <- cotsapas[,grep("^MS", names(cotsapas))]
 MS[1:10,]
 
-wakefield.abf(MS$MS.beta, MS$MS.SE, prior.sigma=0.2)
-}
+wakefield.abf(MS$MS.beta, MS$MS.SE, prior.sigma = 0.2)
 
 #For a single value
 i<-1
-wakefield.abf(cotsapas$SLE.beta[i],cotsapas$SLE.SE[i],prior.sigma=0.2)
+wakefield.abf(cotsapas$SLE.beta[i], cotsapas$SLE.SE[i], prior.sigma = 0.2)}
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
