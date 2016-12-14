@@ -118,8 +118,8 @@ meta.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.
         if(!isSymmetric.matrix(prior.cor)){
             stop("prior.cor is not a symmetric matrix.")
         }
-        if(any(eigen(prior.cor)$values<0)){
-            stop("prior.cor is not positive semidefinite.")
+        if(any(svd(prior.cor)$d<0)){
+            warning("prior.cor is not positive semidefinite. Errors may arise due to this.")
         }
         if(!all(diag(prior.cor) %in% c(0,1))){
             stop("the diagonal of prior.cor should be 1 for all studies with true effects and 0 elsewhere.")
