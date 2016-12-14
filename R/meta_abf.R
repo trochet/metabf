@@ -112,7 +112,7 @@ meta.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.
         if(dim(prior.cor)[1]!=dim(prior.cor)[2]){
             stop("prior.cor is not a square matrix.")
         }
-        if(dim(prior.cor[1])!=nstudies){
+        if(dim(prior.cor)[1]!=nstudies){
             stop("the dimensions of prior.cor do not match the number of studies in the meta-analysis.")
         }
         if(!isSymmetric.matrix(prior.cor)){
