@@ -90,16 +90,12 @@ meta.abf<-function(betas,ses,prior.sigma,prior.cor="indep",prior.rho=NA,cryptic.
             if(!is.numeric(prior.rho)){
                 stop("prior.rho must be numeric.")
             }
-            if(!length(prior.rho) %in% c(1,choose(nstudies,2))){
-                stop("prior.rho should be either a flat value or the full upper triangle of the desired correlation matrix.")
+            if(!length(prior.rho) > 1){
+                stop("prior.rho should be a flat value. If you would like to use a more complex correlation matrix, define it in prior.cor.")
             }
             if(length(prior.cor)==1){
                 prior.cor.mat<-matrix(prior.rho,nrow=nstudies,ncol=nstudies)
                 diag(prior.cor.mat)<-1
-            } else {
-                prior.cor.mat<-diag(nstudies)
-                prior.cor.mat[upper.tri(prior.cor.mat,diag=FALSE)]<-prior.cor
-                prior.cor.mat[lower.tri(prior.cor.mat)]<-t(prior.cor.mat)[lower.tri(prior.cor.mat)]
             }
         } else if(prior.cor=="indep"){
             prior.cor.mat<-diag(nstudies)
